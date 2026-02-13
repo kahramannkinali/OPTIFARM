@@ -85,7 +85,7 @@
 
         /* Card Styles */
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
-        .card { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; }
         .card h3 { margin-top: 0; color: var(--primary); }
         
         /* Market Specific Styles */
@@ -102,18 +102,24 @@
         
         .empty-message { text-align: center; color: #777; padding: 20px; font-style: italic; background: #fff; border-radius: 8px; }
         
+        /* New Delete Button Style */
+        .delete-btn {
+            position: absolute; bottom: 10px; right: 10px;
+            background: #ffcdd2; color: #c62828; border: none;
+            padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 0.8rem;
+        }
+        .delete-btn:hover { background: #e53935; color: white; }
+
         footer { text-align: center; margin-top: 50px; color: #999; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-<!-- LOGO HEADER -->
 <header>
     <h1>OPTIFARM 🇹🇷</h1>
     <p>Türkiye'nin Akıllı Tarım ve İstihdam Platformu</p>
 </header>
 
-<!-- Navigation -->
 <nav>
     <button onclick="switchView('calculator')" id="nav-calculator" class="active"> Akıllı Mahsul</button>
     <button onclick="switchView('market')" id="nav-market"> İşçi Pazarı</button>
@@ -121,7 +127,6 @@
 
 <div class="container">
 
-    <!-- SECTION 1: CROP CALCULATOR -->
     <div id="calculator" class="section active">
         <div class="calc-box">
             <h2> Mahsul Optimizasyon Motoru</h2>
@@ -143,7 +148,6 @@
         </div>
     </div>
 
-    <!-- SECTION 2: WORKER MARKET -->
     <div id="market" class="section">
         <div class="market-tabs">
             <button class="tab-btn active-tab" onclick="switchMarketTab('workers')"> İşçi Bul</button>
@@ -151,7 +155,6 @@
             <button class="tab-btn" style="background:var(--accent); color:black;" onclick="toggleForm()"> İlan Ver</button>
         </div>
 
-        <!-- Hidden Form to Post Advert -->
         <div id="postForm" class="form-panel">
             <h3>Yeni İlan Oluştur</h3>
             <select id="advertType" class="input-field">
@@ -171,14 +174,12 @@
             <button class="action-btn" onclick="postAdvert()">İlanı Yayınla</button>
         </div>
 
-        <!-- Worker Listings (Farmers look here) -->
         <div id="workerListings">
             <h2>Mevcut İşçiler</h2>
             <p>Şu anda çalışmaya uygun mevsimlik işçiler.</p>
             <div id="workersGrid" class="grid"></div>
         </div>
 
-        <!-- Farmer Listings (Workers look here) -->
         <div id="farmerListings" style="display:none;">
             <h2>Çiftlik İş İlanları</h2>
             <p>Hasat sezonu için eleman arayan çiftçiler.</p>
@@ -202,9 +203,10 @@
         "sanliurfa": { crops: ["Pamuk ", "Antep Fıstığı "], animals: ["Koyun "] }
     };
 
-    // --- CLEAN DATABASES (No Fake Adverts) ---
-    let workersDB = []; 
-    let farmersDB = [];
+    // --- DATABASE INITIALIZATION (Load from Memory) ---
+    // If we have saved data, use it. If not, start empty.
+    let workersDB = JSON.parse(localStorage.getItem('optifarm_workers')) || [];
+    let farmersDB = JSON.parse(localStorage.getItem('optifarm_farmers')) || [];
 
     // --- FUNCTIONS ---
 
@@ -241,7 +243,8 @@
         if (workersDB.length === 0) {
             wContainer.innerHTML = '<div class="empty-message">Aktif işçi ilanı yok. İlan eklemek için "İlan Ver" butonuna tıklayın.</div>';
         } else {
-            wContainer.innerHTML = workersDB.map(w => `
+            // Note: We add 'index' to the map function so we know which one to delete
+            wContainer.innerHTML = workersDB.map((w, index) => `
                 <div class="card">
                     <span class="price-tag">${w.salary}</span>
                     <h3>${w.name}</h3>
@@ -250,6 +253,7 @@
                     <p> <b>Gidebileceği Yerler:</b> ${w.dest}</p>
                     <p> <b>İletişim:</b> ${w.contact}</p>
                     <span class="tag">İşçi</span>
+                    <button class="delete-btn" onclick="deleteItem('workers', ${index})">İlanı Sil</button>
                 </div>
             `).join('');
         }
@@ -259,13 +263,14 @@
         if (farmersDB.length === 0) {
             fContainer.innerHTML = '<div class="empty-message">Aktif iş ilanı yok. İlan eklemek için "İlan Ver" butonuna tıklayın.</div>';
         } else {
-            fContainer.innerHTML = farmersDB.map(f => `
+            fContainer.innerHTML = farmersDB.map((f, index) => `
                 <div class="card" style="border-left-color: var(--primary);">
                     <span class="price-tag">${f.salary}</span>
                     <h3>${f.name}</h3>
                     <p> <b>Çiftlik Konumu:</b> ${f.location}</p>
                     <p> <b>İletişim:</b> ${f.contact}</p>
                     <span class="tag" style="color:white; background:var(--primary)">İşveren</span>
+                    <button class="delete-btn" onclick="deleteItem('farmers', ${index})">İlanı Sil</button>
                 </div>
             `).join('');
         }
@@ -298,10 +303,16 @@
         if(!name || !loc || !salary) { alert("Lütfen tüm alanları doldurun!"); return; }
 
         if (type === 'worker') {
+            // 1. Add to array
             workersDB.unshift({ name, location: loc, gender: gender, dest: dest || "Farketmez", salary, contact });
+            // 2. SAVE to memory
+            localStorage.setItem('optifarm_workers', JSON.stringify(workersDB));
             switchMarketTab('workers');
         } else {
+            // 1. Add to array
             farmersDB.unshift({ name, location: loc, salary, contact });
+            // 2. SAVE to memory
+            localStorage.setItem('optifarm_farmers', JSON.stringify(farmersDB));
             switchMarketTab('farmers');
         }
 
@@ -310,10 +321,23 @@
         alert("İlanınız başarıyla yayınlandı!");
     }
 
+    // New Function to Delete Items
+    function deleteItem(type, index) {
+        if(confirm("Bu ilanı silmek istediğinize emin misiniz?")) {
+            if(type === 'workers') {
+                workersDB.splice(index, 1); // Remove from array
+                localStorage.setItem('optifarm_workers', JSON.stringify(workersDB)); // Update memory
+            } else {
+                farmersDB.splice(index, 1); // Remove from array
+                localStorage.setItem('optifarm_farmers', JSON.stringify(farmersDB)); // Update memory
+            }
+            renderMarket(); // Update screen
+        }
+    }
+
     // Initialize
     renderMarket();
 </script>
 
 </body>
 </html>
-
