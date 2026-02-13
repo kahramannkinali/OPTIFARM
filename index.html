@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriTurk | Comprehensive Farm Solutions</title>
+    <title>OPTIFARM</title>
     <style>
         :root {
             --primary: #2e7d32;
@@ -90,7 +90,7 @@
 <!-- Navigation -->
 <nav>
     <!-- FIXED: IDs now match the JavaScript logic exactly -->
-    <button onclick="switchView('calculator')" id="nav-calculator" class="active">Optimum Farming</button>
+    <button onclick="switchView('calculator')" id="nav-calculator" class="active">Verimli Çiftçilik</button>
     <button onclick="switchView('market')" id="nav-market">Sezonluk İşçi İlanları</button>
 </nav>
 
@@ -99,20 +99,20 @@
     <!-- SECTION 1: CROP CALCULATOR -->
     <div id="calculator" class="section active">
         <div class="calc-box">
-            <h2>OPTIFARM  Naber ANNE & Baba</h2>
+            <h2>OPTIFARM</h2>
             <p>Optimum tarım şartları istenen şehri seçiniz.</p>
             <select id="citySelect">
-                <option value="konya">Konya (Central)</option>
-                <option value="antalya">Antalya (South)</option>
-                <option value="rize">Rize (North)</option>
-                <option value="edirne">Edirne (West)</option>
-                <option value="sanliurfa">Şanlıurfa (East)</option>
+                <option value="konya">Konya (İç Anadolu)</option>
+                <option value="antalya">Antalya (Güney)</option>
+                <option value="rize">Rize (Kuzey)</option>
+                <option value="edirne">Edirne (Batı)</option>
+                <option value="sanliurfa">Şanlıurfa (Doğu)</option>
             </select>
             <button class="action-btn" onclick="calculateOptimization()">Analiz et<button>
         </div>
 
         <div id="calcResults" style="display:none; margin-top: 30px;">
-            <h3>📊 Analysis Results</h3>
+            <h3>📊 Analiz Sonuçları</h3>
             <div class="grid" id="cropGrid"></div>
             <div class="grid" id="animalGrid"></div>
         </div>
@@ -121,17 +121,17 @@
     <!-- SECTION 2: WORKER MARKET -->
     <div id="market" class="section">
         <div class="market-tabs">
-            <button class="tab-btn active-tab" onclick="switchMarketTab('workers')">👷 Find Workers</button>
+            <button class="tab-btn active-tab" onclick="switchMarketTab('workers')">İşçi Ara</button>
             <button class="tab-btn" onclick="switchMarketTab('farmers')">🚜 Find Farm Jobs</button>
-            <button class="tab-btn" style="background:var(--accent); color:black;" onclick="toggleForm()">➕ Post Advert</button>
+            <button class="tab-btn" style="background:var(--accent); color:black;" onclick="toggleForm()">İlan Ver</button>
         </div>
 
         <!-- Hidden Form to Post Advert -->
         <div id="postForm" class="form-panel">
-            <h3>Post a New Advert</h3>
+            <h3>Yeni İlanlar</h3>
             <select id="advertType" class="input-field">
-                <option value="worker">I am a Worker (Looking for job)</option>
-                <option value="farmer">I am a Farmer (Looking for workers)</option>
+                <option value="worker">Çalışanım<option>
+                <option value="farmer">İşverenim</option>
             </select>
             <input type="text" id="postName" placeholder="Name & Surname" class="input-field">
             <input type="text" id="postLoc" placeholder="Current Location / Farm Location" class="input-field">
@@ -139,24 +139,24 @@
             <input type="text" id="postContact" placeholder="Phone Number" class="input-field">
             <input type="text" id="postDest" placeholder="Willing to travel to... (Workers only)" class="input-field">
             <select id="postGender" class="input-field">
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
+                <option value="Male">Erkek</option>
+                <option value="Female">Kadın</option>
             </select>
             
-            <button class="action-btn" onclick="postAdvert()">Submit Advert</button>
+            <button class="action-btn" onclick="postAdvert()">Yükle</button>
         </div>
 
         <!-- Worker Listings (Farmers look here) -->
         <div id="workerListings">
-            <h2>Available Workers</h2>
-            <p>Seasonal workers currently looking for employment.</p>
+            <h2>Aktif İlanlar</h2>
+            <p>Şu anda iş arayan sezonluk işçiler.</p>
             <div id="workersGrid" class="grid"></div>
         </div>
 
         <!-- Farmer Listings (Workers look here) -->
         <div id="farmerListings" style="display:none;">
-            <h2>Farm Job Openings</h2>
-            <p>Farmers currently hiring for harvest season.</p>
+            <h2>Çiftlik İş İlanları</h2>
+            <p>Şu anda iş veren çiftçiler</p>
             <div id="farmersGrid" class="grid"></div>
         </div>
     </div>
@@ -166,11 +166,11 @@
 <script>
     // --- DATA ---
     const agriData = {
-        "konya": { crops: ["Wheat 🌾", "Sugar Beet 🍬", "Barley 🍺"], animals: ["Merino Sheep 🐑", "Poultry 🐓"] },
-        "antalya": { crops: ["Tomatoes 🍅", "Citrus 🍊", "Avocado 🥑"], animals: ["Goats 🐐", "Bees 🐝"] },
-        "rize": { crops: ["Tea 🍵", "Hazelnuts 🌰", "Blueberries 🫐"], animals: ["Jersey Cows 🐄", "Trout 🐟"] },
-        "edirne": { crops: ["Sunflowers 🌻", "Rice 🍚"], animals: ["Dairy Cows 🥛"] },
-        "sanliurfa": { crops: ["Cotton 👕", "Pistachios 🥜"], animals: ["Sheep 🐏"] }
+        "konya": { Ekinler: ["Buğday", "Şeker Pancarı", "Arpa"], Hayvanlar: ["Koyun", "Tavuk"] },
+        "antalya": { Ekinler: ["Domates", "Narenciye", "Avocado 🥑"], Hayvanlar: ["Keçi", "Arıcılık"] },
+        "rize": { Ekinler: ["Çay", "Fındık", "Yaban Mersini"], Hayvanlar: ["Jersey İneği", "Alabalık"] },
+        "edirne": { Ekinler: ["Ayçiçeği", "Pirinç"], Hayvanlar: ["İnek"] },
+        "sanliurfa": { Ekinler: ["Pamuk", "Antep Fıstığı"], Hayvanlar: ["Koyun"] }
     };
 
     // --- CLEAN DATABASES (No Fake Adverts) ---
@@ -288,3 +288,4 @@
 
 </body>
 </html>
+
