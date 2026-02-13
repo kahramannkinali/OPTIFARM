@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPTIFARM</title>
+    <style>
+        body { font-family: sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h1 { color: #2e7d32; text-align: center; }
+        select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
+        button { background-color: #2e7d32; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #1b5e20; }
+        .result-box { display: none; margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; }
+        .card { background: white; padding: 15px; margin-top: 10px; border-radius: 5px; border-left: 5px solid #ffb74d; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>OPTIFARM</h1>
+    <p style="text-align: center;">Select a city to see AI recommendations.</p>
+
+    <label><b>Select Area:</b></label>
+    <select id="citySelect">
+        <option value="konya">Konya</option>
+        <option value="antalya">Antalya</option>
+        <option value="rize">Rize</option>
+        <option value="edirne">Edirne</option>
+        <option value="sanliurfa">Şanlıurfa</option>
+    </select>
+
+    <button onclick="showResults()">En uygun bitkiler</button>
+
+    <div id="results" class="result-box">
+        <h2 id="cityName">Results</h2>
+        <div id="weatherInfo" style="margin-bottom: 15px; font-weight: bold;"></div>
+        
+        <h3>🌱 Best Crops:</h3>
+        <div id="cropsList"></div>
+
+        <h3>🐄 Best Animals:</h3>
+        <div id="animalsList"></div>
+    </div>
+</div>
+
+<script>
+    const data = {
+        "konya": { 
+            weather: "Dry, Cold Winters", 
+            crops: ["Wheat (Buğday)", "Sugar Beet (Şeker Pancarı)"], 
+            animals: ["Sheep (Koyun)", "Poultry (Kümes)"] 
+        },
+        "antalya": { 
+            weather: "Hot, Humid", 
+            crops: ["Citrus (Narenciye)", "Greenhouse Tomato"], 
+            animals: ["Goats (Keçi)", "Bees (Arıcılık)"] 
+        },
+        "rize": { 
+            weather: "Very Rainy", 
+            crops: ["Tea (Çay)", "Kiwi"], 
+            animals: ["Cattle (Sığır)", "Trout (Alabalık)"] 
+        },
+        "edirne": { 
+            weather: "Moderate", 
+            crops: ["Sunflower (Ayçiçeği)", "Rice (Çeltik)"], 
+            animals: ["Dairy Cows (Süt İneği)"] 
+        },
+        "sanliurfa": { 
+            weather: "Very Hot", 
+            crops: ["Cotton (Pamuk)", "Pistachio (Fıstık)"], 
+            animals: ["Sheep (Koyun)"] 
+        }
+    };
+
+    function showResults() {
+        const city = document.getElementById('citySelect').value;
+        const info = data[city];
+        
+        document.getElementById('cityName').innerText = "Optimized for " + city.toUpperCase();
+        document.getElementById('weatherInfo').innerText = "🌤 Weather Profile: " + info.weather;
+        
+        // Fill Crops
+        let cropHTML = "";
+        info.crops.forEach(c => { cropHTML += `<div class='card'>${c}</div>`; });
+        document.getElementById('cropsList').innerHTML = cropHTML;
+
+        // Fill Animals
+        let animalHTML = "";
+        info.animals.forEach(a => { animalHTML += `<div class='card'>${a}</div>`; });
+        document.getElementById('animalsList').innerHTML = animalHTML;
+
+        document.getElementById('results').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
