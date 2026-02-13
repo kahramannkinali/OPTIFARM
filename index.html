@@ -3,95 +3,287 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPTIFARM</title>
+    <title>AgriTurk | Comprehensive Farm Solutions</title>
     <style>
-        body { font-family: sans-serif; background-color: #f4f7f6; color: #333; margin: 0; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h1 { color: #2e7d32; text-align: center; }
-        select, button { width: 100%; padding: 15px; margin: 10px 0; border-radius: 5px; border: 1px solid #ccc; font-size: 16px; }
-        button { background-color: #2e7d32; color: white; border: none; cursor: pointer; font-weight: bold; }
-        button:hover { background-color: #1b5e20; }
-        .result-box { display: none; margin-top: 20px; padding: 20px; background: #e8f5e9; border-radius: 8px; }
-        .card { background: white; padding: 15px; margin-top: 10px; border-radius: 5px; border-left: 5px solid #ffb74d; }
+        :root {
+            --primary: #2e7d32;
+            --light-green: #e8f5e9;
+            --accent: #f9a825;
+            --dark: #1b1b1b;
+            --white: #ffffff;
+            --gray: #f4f7f6;
+        }
+
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; background-color: var(--gray); color: var(--dark); }
+
+        /* Navigation Bar */
+        nav {
+            background-color: var(--primary);
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        nav button {
+            background: transparent;
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: 0.3s;
+        }
+
+        nav button:hover, nav button.active {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+            font-weight: bold;
+        }
+
+        /* Layout */
+        .container { max-width: 900px; margin: 30px auto; padding: 20px; }
+        
+        /* Sections */
+        .section { display: none; animation: fadeIn 0.5s; }
+        .section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Calculator Styles */
+        .calc-box { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+        select, .input-field { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        
+        .action-btn {
+            background-color: var(--primary); color: white; border: none; 
+            padding: 15px 30px; border-radius: 5px; cursor: pointer; font-size: 16px; width: 100%;
+        }
+        .action-btn:hover { background-color: #1b5e20; }
+
+        /* Card Styles */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-top: 20px; }
+        .card { background: white; padding: 20px; border-radius: 8px; border-left: 5px solid var(--accent); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card h3 { margin-top: 0; color: var(--primary); }
+        
+        /* Market Specific Styles */
+        .market-tabs { display: flex; justify-content: center; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 15px; border: none; cursor: pointer; background: #ddd; font-weight: bold; }
+        .tab-btn.active-tab { background: var(--primary); color: white; }
+        .tab-btn:first-child { border-radius: 8px 0 0 8px; }
+        .tab-btn:last-child { border-radius: 0 8px 8px 0; }
+
+        .tag { display: inline-block; background: var(--light-green); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; margin-right: 5px; color: var(--primary); font-weight: bold; }
+        .price-tag { float: right; color: var(--accent); font-weight: bold; font-size: 1.2rem; }
+
+        .form-panel { background: white; padding: 20px; margin-bottom: 20px; border-radius: 10px; border: 1px solid #ddd; display: none; }
+        
+        .empty-message { text-align: center; color: #777; padding: 20px; font-style: italic; background: #fff; border-radius: 8px; }
     </style>
 </head>
 <body>
 
+<!-- Navigation -->
+<nav>
+    <!-- FIXED: IDs now match the JavaScript logic exactly -->
+    <button onclick="switchView('calculator')" id="nav-calculator" class="active">Optimum Farming</button>
+    <button onclick="switchView('market')" id="nav-market">Sezonluk İşçi İlanları</button>
+</nav>
+
 <div class="container">
-    <h1>OPTIFARM</h1>
-    <p style="text-align: center;">Select a city to see AI recommendations.</p>
 
-    <label><b>Select Area:</b></label>
-    <select id="citySelect">
-        <option value="konya">Konya</option>
-        <option value="antalya">Antalya</option>
-        <option value="rize">Rize</option>
-        <option value="edirne">Edirne</option>
-        <option value="sanliurfa">Şanlıurfa</option>
-    </select>
+    <!-- SECTION 1: CROP CALCULATOR -->
+    <div id="calculator" class="section active">
+        <div class="calc-box">
+            <h2>OPTIFARM  Naber ANNE & Baba</h2>
+            <p>Optimum tarım şartları istenen şehri seçiniz.</p>
+            <select id="citySelect">
+                <option value="konya">Konya (Central)</option>
+                <option value="antalya">Antalya (South)</option>
+                <option value="rize">Rize (North)</option>
+                <option value="edirne">Edirne (West)</option>
+                <option value="sanliurfa">Şanlıurfa (East)</option>
+            </select>
+            <button class="action-btn" onclick="calculateOptimization()">Analiz et<button>
+        </div>
 
-    <button onclick="showResults()">En uygun bitkiler</button>
-
-    <div id="results" class="result-box">
-        <h2 id="cityName">Results</h2>
-        <div id="weatherInfo" style="margin-bottom: 15px; font-weight: bold;"></div>
-        
-        <h3>🌱 Best Crops:</h3>
-        <div id="cropsList"></div>
-
-        <h3>🐄 Best Animals:</h3>
-        <div id="animalsList"></div>
+        <div id="calcResults" style="display:none; margin-top: 30px;">
+            <h3>📊 Analysis Results</h3>
+            <div class="grid" id="cropGrid"></div>
+            <div class="grid" id="animalGrid"></div>
+        </div>
     </div>
+
+    <!-- SECTION 2: WORKER MARKET -->
+    <div id="market" class="section">
+        <div class="market-tabs">
+            <button class="tab-btn active-tab" onclick="switchMarketTab('workers')">👷 Find Workers</button>
+            <button class="tab-btn" onclick="switchMarketTab('farmers')">🚜 Find Farm Jobs</button>
+            <button class="tab-btn" style="background:var(--accent); color:black;" onclick="toggleForm()">➕ Post Advert</button>
+        </div>
+
+        <!-- Hidden Form to Post Advert -->
+        <div id="postForm" class="form-panel">
+            <h3>Post a New Advert</h3>
+            <select id="advertType" class="input-field">
+                <option value="worker">I am a Worker (Looking for job)</option>
+                <option value="farmer">I am a Farmer (Looking for workers)</option>
+            </select>
+            <input type="text" id="postName" placeholder="Name & Surname" class="input-field">
+            <input type="text" id="postLoc" placeholder="Current Location / Farm Location" class="input-field">
+            <input type="text" id="postSalary" placeholder="Daily Salary Expectation (TL)" class="input-field">
+            <input type="text" id="postContact" placeholder="Phone Number" class="input-field">
+            <input type="text" id="postDest" placeholder="Willing to travel to... (Workers only)" class="input-field">
+            <select id="postGender" class="input-field">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            
+            <button class="action-btn" onclick="postAdvert()">Submit Advert</button>
+        </div>
+
+        <!-- Worker Listings (Farmers look here) -->
+        <div id="workerListings">
+            <h2>Available Workers</h2>
+            <p>Seasonal workers currently looking for employment.</p>
+            <div id="workersGrid" class="grid"></div>
+        </div>
+
+        <!-- Farmer Listings (Workers look here) -->
+        <div id="farmerListings" style="display:none;">
+            <h2>Farm Job Openings</h2>
+            <p>Farmers currently hiring for harvest season.</p>
+            <div id="farmersGrid" class="grid"></div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-    const data = {
-        "konya": { 
-            weather: "Dry, Cold Winters", 
-            crops: ["Wheat (Buğday)", "Sugar Beet (Şeker Pancarı)"], 
-            animals: ["Sheep (Koyun)", "Poultry (Kümes)"] 
-        },
-        "antalya": { 
-            weather: "Hot, Humid", 
-            crops: ["Citrus (Narenciye)", "Greenhouse Tomato"], 
-            animals: ["Goats (Keçi)", "Bees (Arıcılık)"] 
-        },
-        "rize": { 
-            weather: "Very Rainy", 
-            crops: ["Tea (Çay)", "Kiwi"], 
-            animals: ["Cattle (Sığır)", "Trout (Alabalık)"] 
-        },
-        "edirne": { 
-            weather: "Moderate", 
-            crops: ["Sunflower (Ayçiçeği)", "Rice (Çeltik)"], 
-            animals: ["Dairy Cows (Süt İneği)"] 
-        },
-        "sanliurfa": { 
-            weather: "Very Hot", 
-            crops: ["Cotton (Pamuk)", "Pistachio (Fıstık)"], 
-            animals: ["Sheep (Koyun)"] 
-        }
+    // --- DATA ---
+    const agriData = {
+        "konya": { crops: ["Wheat 🌾", "Sugar Beet 🍬", "Barley 🍺"], animals: ["Merino Sheep 🐑", "Poultry 🐓"] },
+        "antalya": { crops: ["Tomatoes 🍅", "Citrus 🍊", "Avocado 🥑"], animals: ["Goats 🐐", "Bees 🐝"] },
+        "rize": { crops: ["Tea 🍵", "Hazelnuts 🌰", "Blueberries 🫐"], animals: ["Jersey Cows 🐄", "Trout 🐟"] },
+        "edirne": { crops: ["Sunflowers 🌻", "Rice 🍚"], animals: ["Dairy Cows 🥛"] },
+        "sanliurfa": { crops: ["Cotton 👕", "Pistachios 🥜"], animals: ["Sheep 🐏"] }
     };
 
-    function showResults() {
-        const city = document.getElementById('citySelect').value;
-        const info = data[city];
-        
-        document.getElementById('cityName').innerText = "Optimized for " + city.toUpperCase();
-        document.getElementById('weatherInfo').innerText = "🌤 Weather Profile: " + info.weather;
-        
-        // Fill Crops
-        let cropHTML = "";
-        info.crops.forEach(c => { cropHTML += `<div class='card'>${c}</div>`; });
-        document.getElementById('cropsList').innerHTML = cropHTML;
+    // --- CLEAN DATABASES (No Fake Adverts) ---
+    let workersDB = []; 
+    let farmersDB = [];
 
-        // Fill Animals
-        let animalHTML = "";
-        info.animals.forEach(a => { animalHTML += `<div class='card'>${a}</div>`; });
-        document.getElementById('animalsList').innerHTML = animalHTML;
+    // --- FUNCTIONS ---
 
-        document.getElementById('results').style.display = 'block';
+    // 1. Navigation Logic
+    function switchView(viewName) {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(el => el.classList.remove('active'));
+        
+        // Show selected
+        const selectedSection = document.getElementById(viewName);
+        const selectedBtn = document.getElementById('nav-' + viewName);
+
+        if (selectedSection) selectedSection.classList.add('active');
+        if (selectedBtn) selectedBtn.classList.add('active');
     }
+
+    // 2. Crop Calculator Logic
+    function calculateOptimization() {
+        const city = document.getElementById('citySelect').value;
+        const data = agriData[city];
+        
+        const cropHTML = data.crops.map(c => `<div class="card"><h3>${c}</h3><p>High Yield Potential</p></div>`).join('');
+        document.getElementById('cropGrid').innerHTML = cropHTML;
+
+        const animalHTML = data.animals.map(a => `<div class="card"><h3>${a}</h3><p>Suitable for terrain</p></div>`).join('');
+        document.getElementById('animalGrid').innerHTML = animalHTML;
+
+        document.getElementById('calcResults').style.display = 'block';
+    }
+
+    // 3. Market Logic
+    function renderMarket() {
+        // Render Workers
+        const wContainer = document.getElementById('workersGrid');
+        if (workersDB.length === 0) {
+            wContainer.innerHTML = '<div class="empty-message">No active worker listings. Click "Post Advert" to add one.</div>';
+        } else {
+            wContainer.innerHTML = workersDB.map(w => `
+                <div class="card">
+                    <span class="price-tag">${w.salary}</span>
+                    <h3>${w.name}</h3>
+                    <p>📍 <b>From:</b> ${w.location}</p>
+                    <p>👤 <b>Gender:</b> ${w.gender}</p>
+                    <p>🚚 <b>To:</b> ${w.dest}</p>
+                    <p>📞 <b>Contact:</b> ${w.contact}</p>
+                    <span class="tag">Worker</span>
+                </div>
+            `).join('');
+        }
+
+        // Render Farmers
+        const fContainer = document.getElementById('farmersGrid');
+        if (farmersDB.length === 0) {
+            fContainer.innerHTML = '<div class="empty-message">No active farm jobs. Click "Post Advert" to add one.</div>';
+        } else {
+            fContainer.innerHTML = farmersDB.map(f => `
+                <div class="card" style="border-left-color: var(--primary);">
+                    <span class="price-tag">${f.salary}</span>
+                    <h3>${f.name}</h3>
+                    <p>📍 <b>Location:</b> ${f.location}</p>
+                    <p>📞 <b>Contact:</b> ${f.contact}</p>
+                    <span class="tag" style="color:white; background:var(--primary)">Hiring</span>
+                </div>
+            `).join('');
+        }
+    }
+
+    function switchMarketTab(tab) {
+        if(tab === 'workers') {
+            document.getElementById('workerListings').style.display = 'block';
+            document.getElementById('farmerListings').style.display = 'none';
+        } else {
+            document.getElementById('workerListings').style.display = 'none';
+            document.getElementById('farmerListings').style.display = 'block';
+        }
+    }
+
+    function toggleForm() {
+        const form = document.getElementById('postForm');
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function postAdvert() {
+        const type = document.getElementById('advertType').value;
+        const name = document.getElementById('postName').value;
+        const loc = document.getElementById('postLoc').value;
+        const salary = document.getElementById('postSalary').value;
+        const contact = document.getElementById('postContact').value;
+        const dest = document.getElementById('postDest').value;
+        const gender = document.getElementById('postGender').value;
+
+        if(!name || !loc || !salary) { alert("Please fill all fields!"); return; }
+
+        if (type === 'worker') {
+            workersDB.unshift({ name, location: loc, gender: gender, dest: dest || "Any", salary, contact });
+            switchMarketTab('workers');
+        } else {
+            farmersDB.unshift({ name, location: loc, salary, contact });
+            switchMarketTab('farmers');
+        }
+
+        renderMarket(); // Refresh list
+        toggleForm(); // Hide form
+    }
+
+    // Initialize
+    renderMarket();
 </script>
 
 </body>
