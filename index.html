@@ -3,408 +3,649 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OPTIFARM | Türkiye Geneli Tarım Planlama</title>
+    <title>OPTIFARM | Tarımsal Yönetim Paneli</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --green-dark: #2e7d32;
-            --green-light: #66bb6a;
-            --brown: #795548;
-            --cream: #f1f8e9;
-            --white: #ffffff;
-            --red-cost: #e53935;
-            --green-profit: #43a047;
+            /* Palette: Nature-Industrial */
+            --primary-olive: #556B2F;
+            --primary-dark: #3e4f20;
+            --earth-brown: #4B3621;
+            --earth-light: #8B5A2B;
+            --accent-blue: #0077B6;
+            --bg-cream: #F5F5DC;
+            --surface-white: #FFFFFF;
+            --text-main: #2C2C2C;
+            --text-muted: #666666;
+            --border-color: #D1D5DB;
+            
+            --sidebar-width: 280px;
         }
+
+        * { box-sizing: border-box; }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--cream);
-            color: #333;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-cream);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
-            background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
-        }
-
-        /* HEADER */
-        header {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1920&q=80');
-            background-size: cover;
-            background-position: center;
-            padding: 60px 20px;
-            text-align: center;
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-
-        header h1 { font-size: 3rem; margin: 0; text-transform: uppercase; letter-spacing: 2px; }
-        header p { font-size: 1.2rem; margin-top: 10px; opacity: 0.9; }
-
-        /* CONTAINER */
-        .container { max-width: 1200px; margin: -40px auto 40px; padding: 0 20px; position: relative; z-index: 10; }
-
-        /* INPUT CARD */
-        .input-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border-top: 5px solid var(--green-dark);
-        }
-
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
-        
-        label { display: block; margin-bottom: 8px; color: var(--brown); font-weight: bold; }
-        select, input {
-            width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 8px; font-size: 1rem; box-sizing: border-box;
-        }
-        select:focus, input:focus { border-color: var(--green-light); outline: none; }
-
-        .btn-calc {
-            background: var(--green-dark); color: white; border: none; padding: 15px 40px;
-            border-radius: 50px; font-size: 1.1rem; cursor: pointer; font-weight: bold;
-            margin-top: 25px; width: 100%; transition: 0.3s;
-        }
-        .btn-calc:hover { background: #1b5e20; transform: translateY(-2px); }
-
-        /* RESULTS SECTION */
-        .results-section { display: none; animation: slideUp 0.6s ease; margin-top: 30px; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        .section-title {
-            text-align: center; color: var(--green-dark); font-size: 1.8rem; margin: 40px 0 20px;
-            border-bottom: 2px solid #ddd; padding-bottom: 10px;
-        }
-
-        /* CARDS GRID */
-        .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
-
-        /* DETAIL CARD DESIGN */
-        .detail-card {
-            background: white;
-            border-radius: 12px;
+            display: flex;
+            height: 100vh;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: 0.3s;
         }
-        .detail-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
 
-        .card-header {
-            padding: 15px; color: white; font-weight: bold; font-size: 1.2rem; display: flex; align-items: center; justify-content: space-between;
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--earth-brown);
+            color: #EFEFEF;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            z-index: 100;
         }
-        .header-crop { background: linear-gradient(to right, #4caf50, #8bc34a); }
-        .header-animal { background: linear-gradient(to right, #795548, #a1887f); }
 
-        .card-body { padding: 20px; }
-
-        .stat-row {
-            display: flex; justify-content: space-between; margin-bottom: 12px; border-bottom: 1px dashed #eee; padding-bottom: 5px;
+        .brand-box {
+            padding: 25px;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .stat-label { color: #666; font-size: 0.9rem; }
-        .stat-val { font-weight: bold; color: #333; }
+        .brand-box i { font-size: 1.8rem; color: var(--primary-olive); background: white; padding: 8px; border-radius: 4px; }
+        .brand-text { font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; }
+
+        .nav-menu {
+            list-style: none;
+            padding: 20px 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .nav-item { margin-bottom: 5px; }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 18px 25px;
+            color: #D3D3D3;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border-left: 5px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-link i { margin-right: 15px; width: 25px; text-align: center; font-size: 1.1rem; }
         
-        .cost-text { color: var(--red-cost); }
-        .profit-text { color: var(--green-profit); }
-
-        .equip-list {
-            background: #fafafa; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-top: 15px; color: #555;
+        .nav-link:hover { background: rgba(255,255,255,0.05); color: white; }
+        .nav-link.active {
+            background: rgba(85, 107, 47, 0.4); /* Olive tint */
+            color: white;
+            border-left-color: var(--primary-olive);
         }
-        .equip-list i { color: var(--green-dark); margin-right: 5px; }
 
-        /* MARKET TABLE */
-        .market-box { background: white; padding: 20px; border-radius: 12px; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; background: #f5f5f5; color: #555; }
-        td { padding: 15px; border-bottom: 1px solid #eee; }
-        .tag { padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; font-weight: bold; }
+        .user-panel {
+            padding: 20px 25px;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+        .user-avatar { width: 40px; height: 40px; background: var(--accent-blue); border-radius: 50%; color: white; display: flex; justify-content: center; align-items: center; font-weight: bold; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            position: relative;
+            background-image: radial-gradient(#e0e0d1 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .top-bar {
+            background: var(--surface-white);
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .breadcrumb { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+        .top-actions button {
+            background: none; border: 1px solid var(--border-color); padding: 8px 15px; border-radius: 4px; color: var(--text-muted); cursor: pointer;
+        }
+
+        /* --- VIEWS --- */
+        .view-section {
+            display: none;
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.3s ease-out;
+        }
+        .view-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        h2.section-heading {
+            color: var(--earth-brown);
+            border-bottom: 2px solid var(--primary-olive);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+        }
+
+        /* --- CARDS (Industrial Style) --- */
+        .ind-card {
+            background: var(--surface-white);
+            border: 1px solid var(--border-color);
+            border-top: 4px solid var(--primary-olive);
+            border-radius: 4px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* --- FORM STYLES --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--earth-brown); font-size: 0.85rem; text-transform: uppercase; }
+        select, input {
+            width: 100%; padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-family: 'Montserrat', sans-serif;
+            background: #FAFAFA;
+            color: var(--text-main);
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-olive);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 25px;
+            transition: background 0.2s;
+            width: 100%;
+        }
+        .btn-primary:hover { background: var(--primary-dark); }
+
+        /* --- RESULTS GRID --- */
+        .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
         
+        .result-card {
+            background: var(--surface-white);
+            border: 1px solid var(--border-color);
+            border-left: 5px solid var(--primary-olive);
+        }
+        .rc-header {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            color: var(--earth-brown);
+        }
+        .rc-body { padding: 20px; }
+        .data-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px dashed #eee; padding-bottom: 5px; }
+        .data-val { font-weight: 600; color: var(--text-main); }
+        .profit-val { color: var(--primary-olive); font-weight: 700; }
+        .cost-val { color: #D32F2F; font-weight: 700; }
+
+        /* --- MARKETPLACE TABLE & CARDS --- */
+        .market-flex { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .listing-card {
+            background: white; border: 1px solid var(--border-color); display: flex; flex-direction: column;
+        }
+        .listing-img { height: 180px; background-color: #ddd; background-size: cover; background-position: center; }
+        .listing-body { padding: 20px; }
+        .listing-title { font-weight: 700; color: var(--earth-brown); margin-bottom: 5px; }
+        .listing-sub { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+        .listing-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 15px; border-top: 1px solid #eee; }
+        .listing-price { color: var(--accent-blue); font-weight: 700; font-size: 1.1rem; }
+
+        .data-table { width: 100%; border-collapse: collapse; background: white; border: 1px solid var(--border-color); }
+        .data-table th { background: var(--earth-brown); color: white; padding: 12px; text-align: left; font-size: 0.85rem; }
+        .data-table td { padding: 12px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .data-table tr:hover { background: #f9f9f9; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-active { background: #e8f5e9; color: var(--primary-olive); }
+        .status-pending { background: #fff3e0; color: #f57c00; }
+
+        /* --- FINANCE CARDS (Bank Style) --- */
+        .finance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        .bank-card {
+            background: white; border: 1px solid var(--border-color); padding: 0;
+            transition: transform 0.2s; position: relative; overflow: hidden;
+        }
+        .bank-card:hover { transform: translateY(-3px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .bank-header { padding: 20px; background: #fafafa; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px; }
+        .bank-icon { font-size: 1.5rem; }
+        .bank-name { font-weight: 700; color: var(--earth-brown); }
+        
+        .bank-body { padding: 20px; }
+        .loan-detail { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.9rem; }
+        .detail-label { color: var(--text-muted); }
+        .detail-value { font-weight: 600; color: var(--text-main); }
+
+        .bank-footer { padding: 15px 20px; border-top: 1px solid #eee; text-align: center; }
+        .btn-apply { color: var(--accent-blue); text-decoration: none; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; }
+
+        /* Specific Bank Colors */
+        .ziraat-border { border-top: 4px solid #E11D2C; }
+        .ziraat-icon { color: #E11D2C; }
+        .tarim-border { border-top: 4px solid #F59E0B; }
+        .tarim-icon { color: #F59E0B; }
+        .tkdk-border { border-top: 4px solid #0077B6; }
+        .tkdk-icon { color: #0077B6; }
+
     </style>
 </head>
 <body>
 
-<header>
-    <h1>OPTIFARM</h1>
-    <p>81 İl İçin Özelleştirilmiş Tarımsal Veri Analizi</p>
-</header>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand-box">
+            <i class="fa-solid fa-seedling"></i>
+            <span class="brand-text">OPTIFARM</span>
+        </div>
+        
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a class="nav-link active" onclick="switchView('analysis-view', this)">
+                    <i class="fa-solid fa-chart-line"></i> Saha Analizi
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="switchView('market-view', this)">
+                    <i class="fa-solid fa-store"></i> Pazar Yeri
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" onclick="switchView('finance-view', this)">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Finansal Destek
+                </a>
+            </li>
+        </ul>
 
-<div class="container">
-    
-    <!-- GİRİŞ FORMU -->
-    <div class="input-card">
-        <h2 style="margin-top:0; color:var(--green-dark);"><i class="fas fa-search-location"></i> Arazi Analizi</h2>
-        <div class="form-grid">
+        <div class="user-panel">
+            <div class="user-avatar">MK</div>
             <div>
-                <label>Bölge Seçimi</label>
-                <select id="regionSelect" onchange="updateCities()">
-                    <option value="">-- Bölge Seçiniz --</option>
-                    <option value="marmara">Marmara Bölgesi</option>
-                    <option value="ic_anadolu">İç Anadolu Bölgesi</option>
-                    <option value="ege">Ege Bölgesi</option>
-                    <option value="akdeniz">Akdeniz Bölgesi</option>
-                    <option value="karadeniz">Karadeniz Bölgesi</option>
-                    <option value="dogu">Doğu Anadolu Bölgesi</option>
-                    <option value="guneydogu">Güneydoğu Anadolu Bölgesi</option>
-                </select>
-            </div>
-            <div>
-                <label>Şehir</label>
-                <select id="citySelect" disabled><option>-- Önce Bölge Seçiniz --</option></select>
-            </div>
-            <div>
-                <label>Arazi Büyüklüğü (Dönüm)</label>
-                <input type="number" id="landSize" placeholder="Örn: 50">
+                <div style="font-weight: 600;">Mehmet Kaya</div>
+                <div style="font-size: 0.75rem; opacity: 0.7;">İşletme No: TR-42-009</div>
             </div>
         </div>
-        <button class="btn-calc" onclick="calculateAll()">Bölgeye Uygun Analizi Başlat</button>
-    </div>
+    </aside>
 
-    <!-- SONUÇLAR -->
-    <div id="results" class="results-section">
-        
-        <!-- BİTKİSEL ÜRETİM -->
-        <h3 class="section-title"><i class="fas fa-seedling"></i> Bölgeniz İçin Önerilen Bitkiler</h3>
-        <p style="text-align:center; color:#666; margin-bottom:20px;">Seçilen ilin iklim ve toprak yapısına en uygun ürünlerin maliyet analizi:</p>
-        
-        <div class="cards-grid" id="cropResults">
-            <!-- JS BURAYI DOLDURACAK -->
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="breadcrumb" id="page-title">YÖNETİM PANELİ / SAHA ANALİZİ</div>
+            <div class="top-actions">
+                <button><i class="fa-solid fa-bell"></i></button>
+                <button><i class="fa-solid fa-gear"></i></button>
+            </div>
         </div>
 
-        <!-- HAYVANSAL ÜRETİM -->
-        <h3 class="section-title"><i class="fas fa-paw"></i> Bölgeniz İçin Önerilen Hayvancılık</h3>
-        <p style="text-align:center; color:#666; margin-bottom:20px;">Arazi kapasitesine göre tahmini bakım maliyetleri ve gelir analizi:</p>
-        
-        <div class="cards-grid" id="animalResults">
-            <!-- JS BURAYI DOLDURACAK -->
-        </div>
+        <!-- VIEW 1: FIELD ANALYSIS -->
+        <section id="analysis-view" class="view-section active">
+            <h2 class="section-heading"><i class="fa-solid fa-calculator"></i> Verimlilik & Maliyet Hesaplama</h2>
 
-    </div>
-
-    <!-- PAZAR YERİ -->
-    <div class="market-box">
-        <h3 style="margin-top:0; color:var(--green-dark);"><i class="fas fa-users"></i> İşgücü İlanları</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Tür</th>
-                    <th>İsim / Firma</th>
-                    <th>Konum</th>
-                    <th>Detay</th>
-                    <th>İletişim</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><span class="tag" style="background:#e3f2fd; color:#1565c0;">İşçi</span></td>
-                    <td>Mustafa Yılmaz</td>
-                    <td>Adana, Mersin</td>
-                    <td>Traktör ehliyeti var, tecrübeli</td>
-                    <td>Ara</td>
-                </tr>
-                <tr>
-                    <td><span class="tag" style="background:#e8f5e9; color:#2e7d32;">İşveren</span></td>
-                    <td>Yeşil Vadi Tarım</td>
-                    <td>Konya</td>
-                    <td>Hasat dönemi için 10 kişi aranıyor</td>
-                    <td>Ara</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-</div>
-
-<script>
-    // --- 81 İL VERİ TABANI ---
-    const citiesByRegion = {
-        "marmara": ["Edirne", "Kırklareli", "Tekirdağ", "İstanbul", "Kocaeli", "Yalova", "Sakarya", "Bilecik", "Bursa", "Balıkesir", "Çanakkale"],
-        "ic_anadolu": ["Aksaray", "Ankara", "Çankırı", "Eskişehir", "Karaman", "Kırıkkale", "Kırşehir", "Konya", "Nevşehir", "Niğde", "Sivas", "Yozgat", "Kayseri"],
-        "ege": ["İzmir", "Manisa", "Aydın", "Denizli", "Kütahya", "Afyonkarahisar", "Uşak", "Muğla"],
-        "akdeniz": ["Adana", "Osmaniye", "Antalya", "Burdur", "Hatay", "Isparta", "Mersin (İçel)", "Kahramanmaraş"],
-        "karadeniz": ["Rize", "Trabzon", "Artvin", "Sinop", "Tokat", "Çorum", "Amasya", "Samsun", "Zonguldak", "Bolu", "Düzce", "Karabük", "Bartın", "Kastamonu", "Bayburt", "Giresun", "Gümüşhane", "Ordu"],
-        "dogu": ["Ağrı", "Ardahan", "Bingöl", "Bitlis", "Elazığ", "Erzincan", "Erzurum", "Hakkari", "Iğdır", "Kars", "Malatya", "Muş", "Tunceli", "Van", "Şırnak"],
-        "guneydogu": ["Adıyaman", "Batman", "Diyarbakır", "Gaziantep", "Kilis", "Mardin", "Siirt", "Şanlıurfa"]
-    };
-
-    // --- BÖLGESEL ÜRÜN & HAYVAN VERİLERİ (GELİŞMİŞ) ---
-    const regionalData = {
-        "marmara": {
-            crops: [
-                { name: "Ayçiçeği", water: 450, fuel: 12, equip: "Ekim Makinesi, Biçerdöver", desc: "Trakya bölgesi için en verimli yağlık ürün." },
-                { name: "Pirinç (Çeltik)", water: 2000, fuel: 20, equip: "Lazerli Tesviye, Biçerdöver", desc: "Edirne ve çevresi için yüksek gelirli." }
-            ],
-            animals: [
-                { name: "Süt İneği (Holstein)", feedCost: 16000, waterCost: 800, revenue: 50000, product: "Yüksek Süt Verimi" },
-                { name: "Kümes Hayvancılığı", feedCost: 500, waterCost: 50, revenue: 1200, product: "Et veya Yumurta" }
-            ]
-        },
-        "ic_anadolu": {
-            crops: [
-                { name: "Buğday", water: 350, fuel: 12, equip: "Traktör, Mibzer, Biçerdöver", desc: "Kuru tarıma uygun, bölgenin temel ürünü." },
-                { name: "Şeker Pancarı", water: 1100, fuel: 18, equip: "Çapa ve Söküm Makinesi", desc: "Sulak alanlarda yüksek getiri sağlar." }
-            ],
-            animals: [
-                { name: "Merinos Koyunu", feedCost: 2500, waterCost: 100, revenue: 6000, product: "Yün + Et + Süt" },
-                { name: "Besi Sığırcılığı", feedCost: 18000, waterCost: 500, revenue: 38000, product: "Karkas Et Satışı" }
-            ]
-        },
-        "ege": {
-            crops: [
-                { name: "Zeytin", water: 300, fuel: 8, equip: "Hasat Makinesi, Budama", desc: "Uzun ömürlü, yağı değerli." },
-                { name: "Üzüm (Bağ)", water: 400, fuel: 10, equip: "Bağ Traktörü", desc: "Kuru üzüm ihracat potansiyeli yüksek." }
-            ],
-            animals: [
-                { name: "Kıl Keçisi", feedCost: 1800, waterCost: 80, revenue: 4500, product: "Süt + Et" },
-                { name: "Arıcılık", feedCost: 200, waterCost: 20, revenue: 3500, product: "Çam Balı Üretimi" }
-            ]
-        },
-        "akdeniz": {
-            crops: [
-                { name: "Mısır (Dane)", water: 800, fuel: 15, equip: "Pnömatik Ekim, Biçerdöver", desc: "Sıcak iklim sever, yılda 2 ürün alınabilir." },
-                { name: "Pamuk", water: 950, fuel: 16, equip: "Pamuk Toplama Makinesi", desc: "Çukurova'nın beyaz altını." }
-            ],
-            animals: [
-                { name: "Kıl Keçisi", feedCost: 1500, waterCost: 80, revenue: 4200, product: "Maki bitki örtüsüne uygun." }
-            ]
-        },
-        "karadeniz": {
-            crops: [
-                { name: "Fındık", water: 600, fuel: 8, equip: "Tırpan, Toplama Makinesi", desc: "Eğimli arazide dünya lideri ürün." },
-                { name: "Çay", water: 1500, fuel: 5, equip: "Çay Makası, Budama", desc: "Nemli ve yağışlı bölgeye özel." }
-            ],
-            animals: [
-                { name: "Jersey İneği", feedCost: 14000, waterCost: 600, revenue: 45000, product: "Yağlı Süt Satışı" },
-                { name: "Arıcılık (Anzer)", feedCost: 250, waterCost: 20, revenue: 5000, product: "Değerli Bal Üretimi" }
-            ]
-        },
-        "dogu": {
-            crops: [
-                { name: "Arpa", water: 300, fuel: 10, equip: "Traktör, Mibzer", desc: "Soğuğa dayanıklı, hayvan yemi." },
-                { name: "Yem Bitkileri (Yonca)", water: 800, fuel: 12, equip: "Balya Makinesi", desc: "Hayvancılık için kritik önemde." }
-            ],
-            animals: [
-                { name: "Büyükbaş Besi", feedCost: 17000, waterCost: 500, revenue: 36000, product: "Karkas Et" },
-                { name: "Kars Çoban Köpeği", feedCost: 1000, waterCost: 50, revenue: 0, product: "Sürü Koruma (Gider)" }
-            ]
-        },
-        "guneydogu": {
-            crops: [
-                { name: "Antep Fıstığı", water: 200, fuel: 6, equip: "Hasat Makinesi", desc: "Kuraklığa dayanıklı, getirisi çok yüksek." },
-                { name: "Kırmızı Mercimek", water: 250, fuel: 10, equip: "Biçerdöver", desc: "Kurak alanlarda en iyi verim." }
-            ],
-            animals: [
-                { name: "Koyun (İvesi)", feedCost: 2200, waterCost: 90, revenue: 5800, product: "Süt verimi yüksek ırk." }
-            ]
-        }
-    };
-
-    // --- FONKSİYONLAR ---
-
-    function updateCities() {
-        const region = document.getElementById("regionSelect").value;
-        const citySelect = document.getElementById("citySelect");
-        citySelect.innerHTML = '<option value="">-- Şehir Seçiniz --</option>';
-        
-        if (citiesByRegion[region]) {
-            citiesByRegion[region].forEach(c => {
-                let opt = document.createElement("option");
-                opt.value = c; opt.innerText = c;
-                citySelect.add(opt);
-            });
-            citySelect.disabled = false;
-        } else {
-            citySelect.disabled = true;
-        }
-    }
-
-    function calculateAll() {
-        const land = parseFloat(document.getElementById("landSize").value);
-        const region = document.getElementById("regionSelect").value;
-        const city = document.getElementById("citySelect").value;
-        
-        if (!land || !region || !city) { alert("Lütfen Bölge, Şehir ve Arazi bilgilerini giriniz."); return; }
-
-        // Bölge verilerini çek
-        const data = regionalData[region] || regionalData["ic_anadolu"]; // Default fallback
-
-        // 1. Bitki Hesaplamaları
-        let cropHTML = "";
-        data.crops.forEach(crop => {
-            const totalFuel = (land * crop.fuel * 42).toLocaleString(); // 42 TL Mazot
-            const totalWater = (land * crop.water).toLocaleString();
-            const tractors = Math.ceil(land / 400);
-
-            cropHTML += `
-                <div class="detail-card">
-                    <div class="card-header header-crop">
-                        <span><i class="fas fa-wheat"></i> ${crop.name}</span>
-                        <small style="opacity:0.8">${land} Dönüm</small>
+            <div class="ind-card">
+                <div class="form-grid">
+                    <div>
+                        <label>Bölge Seçimi</label>
+                        <select id="regionSelect" onchange="updateCities()">
+                            <option value="">-- Bölge Seçiniz --</option>
+                            <option value="ic_anadolu">İç Anadolu</option>
+                            <option value="marmara">Marmara</option>
+                            <option value="ege">Ege</option>
+                            <option value="akdeniz">Akdeniz</option>
+                            <option value="karadeniz">Karadeniz</option>
+                            <option value="dogu">Doğu Anadolu</option>
+                            <option value="guneydogu">Güneydoğu</option>
+                        </select>
                     </div>
-                    <div class="card-body">
-                        <p style="font-size:0.9rem; color:#666;">${crop.desc}</p>
-                        <div class="stat-row">
-                            <span class="stat-label">Toplam Mazot Gideri:</span>
-                            <span class="stat-val cost-text">${totalFuel} TL</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Su İhtiyacı (Sezon):</span>
-                            <span class="stat-val">${totalWater} Ton</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Gerekli Traktör:</span>
-                            <span class="stat-val">${tractors} Adet</span>
-                        </div>
-                        <div class="equip-list">
-                            <strong><i class="fas fa-tools"></i> Gerekli Ekipmanlar:</strong><br>
-                            ${crop.equip}
-                        </div>
+                    <div>
+                        <label>Şehir</label>
+                        <select id="citySelect" disabled><option>-- Önce Bölge --</option></select>
+                    </div>
+                    <div>
+                        <label>Arazi Büyüklüğü (Dönüm)</label>
+                        <input type="number" id="landSize" placeholder="Örn: 100">
                     </div>
                 </div>
-            `;
-        });
-        document.getElementById("cropResults").innerHTML = cropHTML;
+                <button class="btn-primary" onclick="calculateAll()"><i class="fa-solid fa-play"></i> Analizi Çalıştır</button>
+            </div>
 
-        // 2. Hayvan Hesaplamaları
-        let animalHTML = "";
-        data.animals.forEach(animal => {
-            // Adet hesaplama (10 dönüme kaç hayvan sığar/bakılır tahmini)
-            let count = animal.name.includes("Arı") ? land * 2 : (animal.name.includes("Koyun") || animal.name.includes("Keçi") ? land * 3 : Math.ceil(land / 2));
-            if(count < 1) count = 1;
+            <div id="weatherDisplay" class="ind-card" style="display:none; background: linear-gradient(to right, #4B3621, #556B2F); color:white; border:none;"></div>
 
-            const totalFeed = (count * animal.feedCost).toLocaleString();
-            const totalRev = (count * animal.revenue).toLocaleString();
+            <div id="results-area" style="display:none;">
+                <h3 style="color:var(--earth-brown); margin-top:30px;"><i class="fa-solid fa-wheat-awn"></i> Bitkisel Üretim Raporu</h3>
+                <div class="results-grid" id="cropResults"></div>
+
+                <h3 style="color:var(--earth-brown); margin-top:30px;"><i class="fa-solid fa-cow"></i> Hayvancılık Projeksiyonu</h3>
+                <div class="results-grid" id="animalResults"></div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: MARKETPLACE -->
+        <section id="market-view" class="view-section">
+            <h2 class="section-heading"><i class="fa-solid fa-handshake"></i> Tarımsal Pazar Yeri</h2>
+
+            <h4 style="color:var(--earth-light);">Öne Çıkan İş Gücü & Ekipman</h4>
+            <div class="market-flex">
+                <!-- Card 1 -->
+                <div class="listing-card">
+                    <div class="listing-img" style="background-image: url('https://images.unsplash.com/photo-1595247957640-59f0b83e4a9e?auto=format&fit=crop&w=400&q=80')"></div>
+                    <div class="listing-body">
+                        <div class="listing-title">New Holland T4.75</div>
+                        <div class="listing-sub"><i class="fa-solid fa-location-dot"></i> Konya, Selçuklu</div>
+                        <div><span class="status-badge status-active">Kiralık</span></div>
+                    </div>
+                    <div class="listing-footer">
+                        <span class="listing-price">2.500 ₺ / Gün</span>
+                        <a href="#" style="color:var(--accent-blue); text-decoration:none;">Detay</a>
+                    </div>
+                </div>
+                <!-- Card 2 -->
+                <div class="listing-card">
+                    <div class="listing-img" style="background-image: url('https://images.unsplash.com/photo-1628151016024-00164c489722?auto=format&fit=crop&w=400&q=80')"></div>
+                    <div class="listing-body">
+                        <div class="listing-title">Sertifikalı Biçerdöver Operatörü</div>
+                        <div class="listing-sub"><i class="fa-solid fa-location-dot"></i> Adana, Ceyhan</div>
+                        <div><span class="status-badge status-active">İş Gücü</span></div>
+                    </div>
+                    <div class="listing-footer">
+                        <span class="listing-price">Teklif Usulü</span>
+                        <a href="#" style="color:var(--accent-blue); text-decoration:none;">İletişim</a>
+                    </div>
+                </div>
+                <!-- Card 3 -->
+                <div class="listing-card">
+                    <div class="listing-img" style="background-image: url('https://plus.unsplash.com/premium_photo-1661910035548-18c1a67605f2?auto=format&fit=crop&w=400&q=80')"></div>
+                    <div class="listing-body">
+                        <div class="listing-title">Damlama Sulama Yedek Parça</div>
+                        <div class="listing-sub"><i class="fa-solid fa-location-dot"></i> İzmir, Tire</div>
+                        <div><span class="status-badge status-active">Satılık</span></div>
+                    </div>
+                    <div class="listing-footer">
+                        <span class="listing-price">150 ₺ / Adet</span>
+                        <a href="#" style="color:var(--accent-blue); text-decoration:none;">Satın Al</a>
+                    </div>
+                </div>
+            </div>
+
+            <h4 style="color:var(--earth-light);">İlan Yönetimi</h4>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>İLAN NO</th>
+                        <th>KATEGORİ</th>
+                        <th>BAŞLIK</th>
+                        <th>TARİH</th>
+                        <th>DURUM</th>
+                        <th>İŞLEM</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>#4291</td>
+                        <td>Ekipman Kiralama</td>
+                        <td>Pulluk 4'lü Ünlü</td>
+                        <td>12.02.2026</td>
+                        <td><span class="status-badge status-active">Yayında</span></td>
+                        <td><i class="fa-solid fa-ellipsis-vertical"></i></td>
+                    </tr>
+                    <tr>
+                        <td>#4298</td>
+                        <td>İş Gücü Talebi</td>
+                        <td>Budama Ekibi Aranıyor</td>
+                        <td>14.02.2026</td>
+                        <td><span class="status-badge status-pending">Onay Bekliyor</span></td>
+                        <td><i class="fa-solid fa-ellipsis-vertical"></i></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- VIEW 3: FINANCE -->
+        <section id="finance-view" class="view-section">
+            <h2 class="section-heading"><i class="fa-solid fa-coins"></i> Finansal Destek & Hibeler</h2>
+
+            <div class="finance-grid">
+                <!-- ZIRAAT -->
+                <div class="bank-card ziraat-border">
+                    <div class="bank-header">
+                        <i class="fa-solid fa-building-columns bank-icon ziraat-icon"></i>
+                        <span class="bank-name">Ziraat Bankası</span>
+                    </div>
+                    <div class="bank-body">
+                        <div style="font-weight:600; margin-bottom:15px;">Genç Çiftçi Kredisi</div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Kredi Limiti</span>
+                            <span class="detail-value">2.500.000 ₺</span>
+                        </div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Faiz Oranı</span>
+                            <span class="detail-value">%3.49 / Yıl</span>
+                        </div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Vade</span>
+                            <span class="detail-value">60 Ay</span>
+                        </div>
+                    </div>
+                    <div class="bank-footer">
+                        <a href="#" class="btn-apply">Başvuru Yap</a>
+                    </div>
+                </div>
+
+                <!-- TARIM KREDI -->
+                <div class="bank-card tarim-border">
+                    <div class="bank-header">
+                        <i class="fa-solid fa-wheat-awn bank-icon tarim-icon"></i>
+                        <span class="bank-name">Tarım Kredi Koop.</span>
+                    </div>
+                    <div class="bank-body">
+                        <div style="font-weight:600; margin-bottom:15px;">Tarımsal Girdi Desteği</div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Kapsam</span>
+                            <span class="detail-value">Mazot, Gübre, Yem</span>
+                        </div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Faiz</span>
+                            <span class="detail-value">%0 (Hasat Vadeli)</span>
+                        </div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Geri Ödeme</span>
+                            <span class="detail-value">Hasat Sonu</span>
+                        </div>
+                    </div>
+                    <div class="bank-footer">
+                        <a href="#" class="btn-apply">Detayları Gör</a>
+                    </div>
+                </div>
+
+                <!-- TKDK -->
+                <div class="bank-card tkdk-border">
+                    <div class="bank-header">
+                        <i class="fa-solid fa-layer-group bank-icon tkdk-icon"></i>
+                        <span class="bank-name">TKDK Hibeleri</span>
+                    </div>
+                    <div class="bank-body">
+                        <div style="font-weight:600; margin-bottom:15px;">IPARD III Programı</div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Destek Oranı</span>
+                            <span class="detail-value">%60 - %75</span>
+                        </div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Tür</span>
+                            <span class="detail-value">Geri Ödemesiz Hibe</span>
+                        </div>
+                        <div class="loan-detail">
+                            <span class="detail-label">Kapsam</span>
+                            <span class="detail-value">Makine & Tesis</span>
+                        </div>
+                    </div>
+                    <div class="bank-footer">
+                        <a href="#" class="btn-apply">Proje Hazırla</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // --- NAVIGATION LOGIC ---
+        function switchView(viewId, element) {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            // Show selected
+            document.getElementById(viewId).classList.add('active');
             
-            animalHTML += `
-                <div class="detail-card">
-                    <div class="card-header header-animal">
-                        <span><i class="fas fa-paw"></i> ${animal.name}</span>
-                        <small style="opacity:0.8">${count} Adet (Kapasite)</small>
+            // Update sidebar active state
+            if(element) {
+                document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+                element.classList.add('active');
+            }
+        }
+
+        // --- DATA & CALCULATOR LOGIC (Preserved & Adapted) ---
+        const citiesByRegion = {
+            "marmara": ["Edirne", "Kırklareli", "Tekirdağ", "İstanbul", "Kocaeli", "Yalova", "Sakarya", "Bilecik", "Bursa", "Balıkesir", "Çanakkale"],
+            "ic_anadolu": ["Aksaray", "Ankara", "Konya", "Eskişehir", "Sivas", "Kayseri"], // Shortened for demo
+            "ege": ["İzmir", "Manisa", "Aydın", "Denizli"],
+            "akdeniz": ["Adana", "Antalya", "Mersin", "Hatay"],
+            "karadeniz": ["Trabzon", "Samsun", "Rize", "Bolu"],
+            "dogu": ["Erzurum", "Van", "Malatya"],
+            "guneydogu": ["Gaziantep", "Şanlıurfa", "Diyarbakır"]
+        };
+
+        const regionalData = {
+            "marmara": { crops: [{ name: "Ayçiçeği", water: 450, fuel: 12, desc: "Trakya bölgesi için optimum." }, { name: "Çeltik", water: 2000, fuel: 20, desc: "Yüksek su ihtiyacı." }], animals: [{ name: "Süt İneği", feedCost: 16000, revenue: 50000, product: "Süt" }] },
+            "ic_anadolu": { crops: [{ name: "Buğday", water: 350, fuel: 12, desc: "Kuru tarım stratejisi." }, { name: "Şeker Pancarı", water: 1100, fuel: 18, desc: "Sözleşmeli üretim." }], animals: [{ name: "Merinos Koyun", feedCost: 2500, revenue: 6000, product: "Yün+Et" }] },
+            // Fallback for others
+            "ege": { crops: [{ name: "Zeytin", water: 300, fuel: 8, desc: "Uzun vadeli yatırım." }], animals: [{ name: "Kıl Keçisi", feedCost: 1800, revenue: 4500, product: "Süt" }] },
+            "akdeniz": { crops: [{ name: "Mısır", water: 800, fuel: 15, desc: "Yılda çift ürün." }], animals: [{ name: "Keçi", feedCost: 1500, revenue: 4200, product: "Süt" }] }
+        };
+
+        function updateCities() {
+            const region = document.getElementById("regionSelect").value;
+            const citySelect = document.getElementById("citySelect");
+            citySelect.innerHTML = '<option value="">-- Şehir Seçiniz --</option>';
+            if (citiesByRegion[region]) {
+                citiesByRegion[region].forEach(c => {
+                    let opt = document.createElement("option"); opt.value = c; opt.innerText = c; citySelect.add(opt);
+                });
+                citySelect.disabled = false;
+            } else { citySelect.disabled = true; }
+        }
+
+        const apiKey = "DEMO_KEY"; // Placeholder
+
+        function calculateAll() {
+            const land = parseFloat(document.getElementById("landSize").value);
+            const region = document.getElementById("regionSelect").value;
+            const city = document.getElementById("citySelect").value;
+
+            if (!land || !region || !city) { alert("Lütfen tüm alanları doldurun."); return; }
+
+            // 1. Mock Weather (No Emojis, FontAwesome)
+            const weatherDiv = document.getElementById("weatherDisplay");
+            weatherDiv.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px;">
+                    <div style="display:flex; align-items:center; gap:15px;">
+                        <i class="fa-solid fa-cloud-sun" style="font-size:2.5rem;"></i>
+                        <div>
+                            <div style="font-size:1.8rem; font-weight:700;">22°C</div>
+                            <div style="font-size:0.9rem;">Parçalı Bulutlu</div>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p style="font-size:0.9rem; color:#666;">${animal.product} üzerinden hesaplanmıştır.</p>
-                        <div class="stat-row">
-                            <span class="stat-label">Yıllık Yem Gideri:</span>
-                            <span class="stat-val cost-text">${totalFeed} TL</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Su Tüketimi (Yıllık):</span>
-                            <span class="stat-val">${(count * animal.waterCost).toLocaleString()} Litre</span>
-                        </div>
-                        <div class="stat-row">
-                            <span class="stat-label">Tahmini Gelir:</span>
-                            <span class="stat-val profit-text">+${totalRev} TL</span>
-                        </div>
+                    <div style="text-align:right;">
+                        <div><i class="fa-solid fa-location-arrow"></i> ${city}</div>
+                        <div><i class="fa-solid fa-droplet"></i> Nem: %45</div>
                     </div>
                 </div>
             `;
-        });
-        document.getElementById("animalResults").innerHTML = animalHTML;
+            weatherDiv.style.display = "block";
 
-        // Göster
-        document.getElementById("results").style.display = "block";
-        document.getElementById("results").scrollIntoView({ behavior: 'smooth' });
-    }
-</script>
+            // 2. Data Calculation
+            const data = regionalData[region] || regionalData["ic_anadolu"];
 
+            let cropHTML = "";
+            data.crops.forEach(crop => {
+                const totalFuel = (land * crop.fuel * 42).toLocaleString();
+                const totalWater = (land * crop.water).toLocaleString();
+                
+                cropHTML += `
+                    <div class="result-card">
+                        <div class="rc-header">
+                            <span>${crop.name}</span>
+                            <span style="font-size:0.8rem; opacity:0.8;">${land} Dönüm</span>
+                        </div>
+                        <div class="rc-body">
+                            <div class="data-row"><span class="detail-label">Mazot Gideri</span><span class="cost-val">${totalFuel} ₺</span></div>
+                            <div class="data-row"><span class="detail-label">Su İhtiyacı</span><span class="data-val">${totalWater} Ton</span></div>
+                            <div style="margin-top:10px; font-size:0.85rem; color:#666;">
+                                <i class="fa-solid fa-info-circle"></i> ${crop.desc}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("cropResults").innerHTML = cropHTML;
+
+            let animalHTML = "";
+            data.animals.forEach(animal => {
+                let count = Math.floor(land / 5) || 1;
+                const totalCost = (count * animal.feedCost).toLocaleString();
+                const totalRev = (count * animal.revenue).toLocaleString();
+                
+                animalHTML += `
+                    <div class="result-card">
+                        <div class="rc-header" style="background:var(--earth-light); color:white;">
+                            <span>${animal.name}</span>
+                            <span style="font-size:0.8rem; opacity:0.9;">~${count} Adet</span>
+                        </div>
+                        <div class="rc-body">
+                            <div class="data-row"><span class="detail-label">Ürün</span><span class="data-val">${animal.product}</span></div>
+                            <div class="data-row"><span class="detail-label">Yem Maliyeti</span><span class="cost-val">-${totalCost} ₺</span></div>
+                            <div class="data-row" style="border:none; margin-top:10px;">
+                                <span class="detail-label" style="font-weight:700;">Tahmini Ciro</span>
+                                <span class="profit-val">+${totalRev} ₺</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById("animalResults").innerHTML = animalHTML;
+
+            document.getElementById("results-area").style.display = "block";
+        }
+    </script>
 </body>
 </html>
